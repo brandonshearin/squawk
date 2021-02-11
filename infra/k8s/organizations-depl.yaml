@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: organizations-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: organizations
+  template: # the template says how to create each individual pod that the deployment will manage
+    metadata:
+      labels:
+        app: organizations
+    spec:
+      containers:
+        - name: organizations
+          image: brandonshearin/organizations
+          env:
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name 
+            - name: NATS_URL
+              value: 'http://nats-srv:4222'
+            - name: NATS_CLUSTER_ID
+              value: ticketing
+            - name: MONGO_URI
+              value: 'mongodb://organizations-mongo-srv:27017/organizations' # there can be multiple db's inside a monogodb instance
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
+---
+apiVersion: v1
+kind: Service # default behavior, when no type is provided, is to create a ClusterIP service
+metadata:
+  name: organizations-srv
+spec:
+  selector:
+    app: organizations
+  ports:
+    - name: organizations
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
