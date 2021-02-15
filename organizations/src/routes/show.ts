@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get("/api/orgs/:orgId", async (req: Request, res: Response) => {
   const { orgId } = req.params;
-  const organization = await Organization.findById(orgId);
+  const organization = await Organization.findById(orgId).populate("comments");
   if (!organization) {
     throw new NotFoundError();
   }

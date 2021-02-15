@@ -8,7 +8,11 @@ const router = express.Router();
 router.post(
   "/api/orgs",
   requireAuth,
-  [body("name").notEmpty().withMessage("a name for the organization must be provided")],
+  [
+    body("name")
+      .notEmpty()
+      .withMessage("a name for the organization must be provided"),
+  ],
   validateRequest,
   async (req: Request, res: Response) => {
     const { name, address, phone, website } = req.body;
@@ -20,8 +24,8 @@ router.post(
       website,
     });
 
-    await organization.save()
-    
+    await organization.save();
+
     res.status(201).send(organization);
   }
 );

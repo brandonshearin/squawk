@@ -1,10 +1,11 @@
 import mongoose from "mongoose";
-
+import { CommentDoc } from "./comment";
 interface OrgAttrs {
   name: string;
   address: string;
   phone: string;
   website: string;
+  comments?: [CommentDoc];
 }
 
 interface OrgDoc extends mongoose.Document {
@@ -12,6 +13,7 @@ interface OrgDoc extends mongoose.Document {
   address: string;
   phone: string;
   website: string;
+  comments: [CommentDoc];
 }
 
 interface OrgModel extends mongoose.Model<OrgDoc> {
@@ -33,6 +35,12 @@ const organizationSchema = new mongoose.Schema(
     website: {
       type: String,
     },
+    comments: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Comment",
+      },
+    ],
   },
   {
     toJSON: {

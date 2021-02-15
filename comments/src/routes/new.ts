@@ -15,7 +15,8 @@ router.post(
   ],
   validateRequest,
   async (req: Request, res: Response) => {
-    const { id: userId } = req.currentUser!;
+    // get user info from request context
+    const { id: userId, email } = req.currentUser!;
 
     const { content, orgId } = req.body;
 
@@ -23,14 +24,17 @@ router.post(
       content,
       userId,
       orgId,
+      userEmail: email,
     });
 
     await comment.save();
 
     // publish that a new comment has been created
     await new CommentCreatedPublisher(natsWrapper.client).publish({
+      id: comment.id,
       content,
       organizationId: orgId,
+      userEmail: email,
       userId,
     });
 
