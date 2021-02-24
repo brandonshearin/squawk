@@ -27,7 +27,7 @@ const Signup = () => {
     <form onSubmit={onSubmit}>
       <h1>Signup!!</h1>
       <div className="form-group">
-        <label>Email Address</label>
+        <label>Email Address!!</label>
         <input
           className="form-control"
           value={email}
