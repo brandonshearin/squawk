@@ -15,6 +15,9 @@ spec:
       containers:
         - name: client
           image: brandonshearin/client
+          env:
+            - name: ENV
+              value: "PROD"
 ---
 apiVersion: v1
 kind: Service
