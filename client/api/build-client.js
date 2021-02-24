@@ -2,7 +2,7 @@ import axios from "axios";
 
 const buildClient = ({ req }) => {
   if (typeof window === "undefined") {
-    console.log(">>> env is ", process.env.ENV);
+    console.log(">>>> env is ", process.env.ENV);
     // we are on the server
     const baseURL =
       process.env.ENV === "DEVELOPMENT"
