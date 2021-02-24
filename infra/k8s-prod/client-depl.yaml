@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: client
-          image: brandonshearin/client
+          image: brandonshearin/client:latest
           env:
             - name: ENV
               value: "PROD"
