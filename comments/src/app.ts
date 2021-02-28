@@ -9,6 +9,7 @@ import { newRouter } from "./routes/new";
 import { showRouter } from "./routes/show";
 import { indexRouter } from "./routes";
 import { deleteRouter } from "./routes/delete";
+import { updateRouter } from "./routes/update";
 
 const app = express();
 app.set("trust proxy", true);
@@ -26,6 +27,7 @@ app.use(newRouter);
 app.use(showRouter);
 app.use(indexRouter);
 app.use(deleteRouter);
+app.use(updateRouter);
 
 app.get("*", async () => {
   throw new NotFoundError();

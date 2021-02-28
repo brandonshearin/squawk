@@ -15,6 +15,7 @@ router.post(
   ],
   validateRequest,
   async (req: Request, res: Response) => {
+    console.log("hello?")
     // get user info from request context
     const { id: userId, email } = req.currentUser!;
 

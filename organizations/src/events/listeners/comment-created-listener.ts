@@ -3,7 +3,6 @@ import {
   Subjects,
   Listener,
   CommentCreatedEvent,
-  TicketCreatedEvent,
 } from "@bscommon/common";
 import { queueGroupName } from "./queue-group-name";
 import { Organization } from "../../models/organization";
@@ -18,7 +17,7 @@ export class CommentCreatedListener extends Listener<CommentCreatedEvent> {
     const organization = await Organization.findById(organizationId);
     if (!organization) {
       // TODO: Handle this error better
-      console.log("organization");
+      console.log("organization is jank");
     }
 
     // step 2: save comment document locally
@@ -27,7 +26,7 @@ export class CommentCreatedListener extends Listener<CommentCreatedEvent> {
       id,
       userEmail,
     });
-    const resp1 = await newComment.save();
+    await newComment.save();
 
     // step 3: add newComment to organizatin doc
     organization?.comments.push(newComment);
