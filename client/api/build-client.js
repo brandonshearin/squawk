@@ -8,6 +8,7 @@ const buildClient = ({ req }) => {
       process.env.ENV === "DEVELOPMENT"
         ? "http://ingress-nginx-controller.ingress-nginx.svc.cluster.local"
         : "http://squawktherapy.com";
+        
     const host =
       process.ENV === "DEVELOPMENT" ? "squawk.dev" : "www.squawktherapy.com";
     return axios.create({

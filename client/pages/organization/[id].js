@@ -21,12 +21,14 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
+  const host =
+    process.ENV === "DEVELOPMENT" ? "squawk.dev" : "www.squawktherapy.com";
   // first way, specify the headers property
   const {
     data,
   } = await axios.get(
     `http://ingress-nginx-controller.ingress-nginx.svc.cluster.local/api/orgs/${params.id}`,
-    { headers: { Host: "squawk.dev" } }
+    { headers: { Host: host } }
   );
   // second way, call the specific service WITH the port #
   // const resp = await axios.get(
