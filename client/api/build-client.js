@@ -12,7 +12,7 @@ const buildClient = ({ req }) => {
       process.ENV === "DEVELOPMENT" ? "squawk.dev" : "www.squawktherapy.com";
     return axios.create({
       baseURL,
-      headers: { Host: "squawk.dev", ...req.headers },
+      headers: { Host: host, ...req.headers },
     });
   } else {
     // we are on the browser
