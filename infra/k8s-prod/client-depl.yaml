@@ -16,8 +16,10 @@ spec:
         - name: client
           image: brandonshearin/client
           env:
-            - name: ENV
-              value: "PROD"
+            - name: BASE_URL
+              value: "http://squawktherapy.com"
+            - name: HOST
+              value: "www.squawktherapy.com"
 ---
 apiVersion: v1
 kind: Service

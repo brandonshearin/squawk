@@ -1,7 +1,8 @@
 import { useState } from "react";
 import useRequest from "../../hooks/useRequest";
 import Router from "next/router";
-
+import { Form, Input, Button, Typography, Row, Col } from "antd";
+const { Title } = Typography;
 const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,35 +18,81 @@ const Signup = () => {
     },
   });
 
-  const onSubmit = async (event) => {
-    event.preventDefault();
-
+  const onSubmit = async (values) => {
+    console.log(email);
+    console.log(password);
     await doRequest();
   };
 
+  const setValues = (changed, all) => {
+    const { email, password } = all;
+    setEmail(email);
+    setPassword(password);
+  };
+  
+  const layout = {
+    labelCol: {
+      span: 8,
+    },
+    wrapperCol: {
+      span: 16,
+    },
+  };
+  const tailLayout = {
+    wrapperCol: {
+      offset: 8,
+      span: 16,
+    },
+  };
+
   return (
-    <form onSubmit={onSubmit}>
-      <h1>Signup</h1>
-      <div className="form-group">
-        <label>Email Address</label>
-        <input
-          className="form-control"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </div>
-      <div className="form-group">
-        <label>Password</label>
-        <input
-          type="password"
-          className="form-control"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </div>
-      {errors}
-      <button className="btn btn-primary">Sign Up</button>
-    </form>
+    <Row justify="space-around" align="middle" style={{ marginTop: "100px" }}>
+      <Col>
+        {/* <Title>Sign Up</Title> */}
+        <Form
+          {...layout}
+          name="basic"
+          initialValues={{
+            remember: true,
+          }}
+          onFinish={onSubmit}
+          onValuesChange={setValues}
+        >
+          <Form.Item
+            label="Email"
+            name="email"
+            rules={[
+              {
+                required: true,
+                message: "Please input your email!",
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label="Password"
+            name="password"
+            rules={[
+              {
+                required: true,
+                message: "Please input your password!",
+              },
+            ]}
+          >
+            <Input.Password />
+          </Form.Item>
+
+          <Form.Item {...tailLayout}>
+            <Button type="primary" htmlType="submit">
+              Submit
+            </Button>
+          </Form.Item>
+          {errors}
+        </Form>
+      </Col>
+    </Row>
   );
 };
 

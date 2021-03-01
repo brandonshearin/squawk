@@ -1,4 +1,3 @@
-import "bootstrap/dist/css/bootstrap.css";
 import buildClient from "../api/build-client";
 import Header from "../components/header";
 import 'antd/dist/antd.css';
