@@ -36,7 +36,7 @@ build:
     - image: brandonshearin/client
       context: client
       docker:
-        dockerfile: Dockerfile
+        dockerfile: Dockerfile.dev
       sync: 
         manual:
           - src: '/**/*.js'

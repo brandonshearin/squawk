@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: client
-          image: brandonshearin/client
+          image: brandonshearin/client-prod
           env:
             - name: BASE_URL
               value: "http://squawktherapy.com"
