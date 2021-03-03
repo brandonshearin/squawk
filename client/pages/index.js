@@ -5,7 +5,7 @@ const { Title } = Typography;
 const LandingPage = () => {
   return (
     <div>
-      <Title>Welcome to Squawk Therapy</Title>
+      <Title>Welcome to Squawk Therapy!</Title>
     </div>
   );
 };
