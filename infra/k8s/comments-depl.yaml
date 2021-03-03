@@ -24,8 +24,13 @@ spec:
               value: 'http://nats-srv:4222'
             - name: NATS_CLUSTER_ID
               value: squawk
-            - name: MONGO_URI
-              value: 'mongodb://comments-mongo-srv:27017/comments' # there can be multiple db's inside a monogodb instance
+            - name: MONGO_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: MONGO_KEY
+            - name: DB_NAME
+              value: comments-service
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:

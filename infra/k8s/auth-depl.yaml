@@ -21,6 +21,13 @@ spec:
                 secretKeyRef:
                   name: jwt-secret
                   key: JWT_KEY
+            - name: MONGO_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: MONGO_KEY
+            - name: DB_NAME
+              value: auth-service
 ---
 apiVersion: v1
 kind: Service # default behavior, when no type is provided, is to create a ClusterIP service

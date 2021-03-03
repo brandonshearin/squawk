@@ -6,8 +6,11 @@ const start = async () => {
   if (!process.env.JWT_KEY) {
     throw new Error("JWT_KEY must be defined");
   }
-  if (!process.env.MONGO_URI) {
-    throw new Error("MONGO_URI must be defined");
+  if (!process.env.MONGO_KEY) {
+    throw new Error("MONGO_KEY must be defined");
+  }
+  if (!process.env.DB_NAME) {
+    throw new Error("DB_NAME must be defined");
   }
   if (!process.env.NATS_CLIENT_ID) {
     throw new Error("NATS_CLIENT_ID must be defined");
@@ -20,22 +23,29 @@ const start = async () => {
   }
 
   try {
-    await natsWrapper.connect(process.env.NATS_CLUSTER_ID, process.env.NATS_CLIENT_ID, process.env.NATS_URL);
+    await natsWrapper.connect(
+      process.env.NATS_CLUSTER_ID,
+      process.env.NATS_CLIENT_ID,
+      process.env.NATS_URL
+    );
     natsWrapper.client.on("close", () => {
       console.log("NATS connection closed!");
       process.exit();
     });
     process.on("SIGINT", () => natsWrapper.client.close());
     process.on("SIGTERM", () => natsWrapper.client.close());
-    
+
     /* Mongoose internally keeps track of this connection, so that anytime we use 
        mongoose in any other parts of our code, the package is under-the-hood managing
        connecting us to the same instance */
-    await mongoose.connect(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useCreateIndex: true,
-    });
+    await mongoose.connect(
+      `mongodb+srv://brandonshearin:${process.env.MONGO_KEY}@cluster0.ybkow.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`,
+      {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+      }
+    );
     console.log("connected to mongo");
   } catch (err) {
     console.log(err);
