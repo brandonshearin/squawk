@@ -15,10 +15,12 @@ router.post(
   ],
   validateRequest,
   async (req: Request, res: Response) => {
-    const { name, address, phone, website } = req.body;
+    const { name, city, address, phone, website, description } = req.body;
 
     const organization = Organization.build({
       address,
+      city,
+      description,
       name,
       phone,
       website,

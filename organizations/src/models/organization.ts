@@ -2,17 +2,21 @@ import mongoose from "mongoose";
 import { CommentDoc } from "./comment";
 interface OrgAttrs {
   name: string;
-  address: string;
+  city: string; // general region
+  address: string; // specific addr
   phone: string;
   website: string;
+  description: string;
   comments?: [CommentDoc];
 }
 
 interface OrgDoc extends mongoose.Document {
   name: string;
+  city: string;
   address: string;
   phone: string;
   website: string;
+  description: string;
   comments: [CommentDoc];
 }
 
@@ -26,6 +30,9 @@ const organizationSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    city: {
+      type: String,
+    },
     address: {
       type: String,
     },
@@ -33,6 +40,9 @@ const organizationSchema = new mongoose.Schema(
       type: String,
     },
     website: {
+      type: String,
+    },
+    description: {
       type: String,
     },
     comments: [

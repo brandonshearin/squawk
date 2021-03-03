@@ -1,14 +1,23 @@
 import buildClient from "../../api/build-client";
-import { PageHeader } from "antd";
+import { PageHeader, Grid, Row, Col } from "antd";
+import CommentList from "../../components/comments/commentList";
 export default function Organization({ data }) {
   console.log(data);
   return (
-    <PageHeader
-      className="site-page-header"
-      onBack={() => window.history.back()}
-      title={data.name}
-      subTitle={data.address}
-    />
+    <>
+      <PageHeader
+        className="site-page-header"
+        onBack={() => window.history.back()}
+        title={data.name}
+        subTitle={`${data.address}, ${data.city}`}
+      />
+
+      <Row>
+        <Col span={12} offset={6}>
+          <CommentList />
+        </Col>
+      </Row>
+    </>
   );
 }
 
@@ -24,7 +33,7 @@ export async function getStaticPaths() {
         },
       };
     }),
-    fallback: false,
+    fallback: true,
   };
 }
 
@@ -36,6 +45,7 @@ export async function getStaticProps({ params }) {
     props: {
       data,
     },
+    revalidate: 1,
   };
 }
 
