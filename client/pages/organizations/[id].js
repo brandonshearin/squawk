@@ -2,14 +2,13 @@ import buildClient from "../../api/build-client";
 import { PageHeader, Grid, Row, Col } from "antd";
 import CommentList from "../../components/comments/commentList";
 export default function Organization({ data }) {
-  console.log(data);
   return (
     <>
       <PageHeader
         className="site-page-header"
         onBack={() => window.history.back()}
-        title={data.name}
-        subTitle={`${data.address}, ${data.city}`}
+        title={data?.name}
+        subTitle={`${data?.address}, ${data?.city}`}
       />
 
       <Row>
