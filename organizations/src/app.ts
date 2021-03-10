@@ -2,17 +2,13 @@ import express from "express";
 import "express-async-errors";
 import { json } from "body-parser";
 import cookieSession from "cookie-session";
-
 import { currentUser, errorHandler, NotFoundError } from "@bscommon/common";
 
-import { newRouter } from "./routes/new";
-import { showRouter } from "./routes/show";
-import { indexRouter } from "./routes";
-import { deleteRouter } from "./routes/delete";
-
 const app = express();
+
 app.set("trust proxy", true);
 app.use(json());
+
 app.use(
   cookieSession({
     signed: false,
@@ -21,16 +17,16 @@ app.use(
 );
 
 app.use(currentUser);
-
-app.use(newRouter);
-app.use(showRouter);
-app.use(indexRouter);
-app.use(deleteRouter);
-
-app.get("*", async () => {
-  throw new NotFoundError();
+app.use(errorHandler);
+app.get("/api/orgs/foobar", (req, res) => {
+  res.send({
+    headers: req.headers,
+    session: req.session,
+  });
 });
 
-app.use(errorHandler);
+// expressApp.get("*", async () => {
+//   throw new NotFoundError();
+// });
 
 export { app };

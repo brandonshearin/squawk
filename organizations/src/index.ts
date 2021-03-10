@@ -5,6 +5,20 @@ import { CommentDeletedEventListener } from "./events/listeners/comment-deleted-
 import { CommentUpdatedEventListener } from "./events/listeners/comment-updated-listener";
 import { natsWrapper } from "./nats-wrapper";
 
+import { TypegooseMiddleware } from "./typegoose-middleware";
+import { ApolloServer } from "apollo-server-express";
+import { buildSchema } from "type-graphql";
+import { OrgResolver } from "./resolvers/organization-resolver";
+import { ObjectIdScalar } from "./object-id.scalar";
+import { ObjectId } from "mongodb";
+export interface Context {
+  user: {
+    id: string;
+    email: string;
+    iat: number;
+  };
+}
+
 const start = async () => {
   if (!process.env.JWT_KEY) {
     throw new Error("JWT_KEY must be defined");
@@ -26,6 +40,7 @@ const start = async () => {
   }
 
   try {
+    // establish nats connection
     await natsWrapper.connect(
       process.env.NATS_CLUSTER_ID,
       process.env.NATS_CLIENT_ID,
@@ -38,6 +53,7 @@ const start = async () => {
     process.on("SIGINT", () => natsWrapper.client.close());
     process.on("SIGTERM", () => natsWrapper.client.close());
 
+    // add listeners
     new CommentCreatedListener(natsWrapper.client).listen();
     new CommentUpdatedEventListener(natsWrapper.client).listen();
     new CommentDeletedEventListener(natsWrapper.client).listen();
@@ -58,9 +74,29 @@ const start = async () => {
     console.log(err);
   }
 
-  app.listen(3000, () => {
+  const schema = await buildSchema({
+    resolvers: [OrgResolver],
+    emitSchemaFile: true,
+    validate: false,
+    globalMiddlewares: [TypegooseMiddleware],
+    scalarsMap: [{ type: ObjectId, scalar: ObjectIdScalar }],
+  });
+
+  const server = new ApolloServer({
+    schema,
+    context: async ({ req }) => {
+      return {
+        user: req.currentUser,
+      } as Context;
+    },
+  });
+  server.applyMiddleware({ app, path: "/api/orgs/graphql" });
+
+  await app.listen(3000, () => {
     console.log("Listening on port 3000!!!");
   });
 };
 
-start();
+start().catch((error) => {
+  console.log("service failure: ", error);
+});
