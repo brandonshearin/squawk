@@ -6,9 +6,9 @@ import {
   CommentDeletedEvent,
 } from "@bscommon/common";
 import { queueGroupName } from "./queue-group-name";
-import { Comment } from "../../models/comment";
-import { Organization } from "../../models/organization";
-
+import { CommentModel } from "../../entities/comment";
+import { OrgModel } from "../../entities/organization";
+import { ObjectId } from "mongodb";
 export class CommentDeletedEventListener extends Listener<CommentDeletedEvent> {
   subject: Subjects.CommentDeleted = Subjects.CommentDeleted;
   queueGroupName = queueGroupName;
@@ -16,20 +16,25 @@ export class CommentDeletedEventListener extends Listener<CommentDeletedEvent> {
   async onMessage(data: CommentDeletedEvent["data"], msg: Message) {
     const { orgId, commentId } = data;
 
-    const org = await Organization.findById(orgId);
+    const org = await OrgModel.findById(orgId);
     if (!org) {
-      console.log("couldnt find org id");
+      console.log("couldnt find org by id");
       return;
     }
+    console.log(org);
 
-    org.comments.filter((comment) => comment.id !== commentId);
+    org.comments.filter((id) => {
+      console.log(id);
+      return id !== new ObjectId(commentId);
+    });
     org.save();
 
+    console.log(org);
+
     // step 2: delete the comment from its collection
-    const response = await Comment.findByIdAndDelete(commentId);
+    const response = await CommentModel.findByIdAndDelete(commentId);
 
-    console.log(response);
-
+    console.log(response?.id);
     msg.ack();
   }
 }

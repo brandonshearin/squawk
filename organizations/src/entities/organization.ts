@@ -2,6 +2,7 @@ import {
   prop as Property,
   getModelForClass,
   modelOptions,
+  mongoose,
 } from "@typegoose/typegoose";
 import { Field, ObjectType } from "type-graphql";
 import { ObjectId } from "mongodb";
@@ -15,6 +16,11 @@ import { Ref } from "../types";
       transform: (_doc, ret) => {
         ret.id = ret._id;
         delete ret._id;
+
+        ret.comments?.map((comment: any) => {
+          comment.id = comment._id;
+          delete comment._id;
+        });
         return ret;
       },
     },
@@ -57,8 +63,12 @@ export class Org {
   description: string;
 
   @Field(() => [Comment])
-  @Property({ ref: () => Comment, default: [] })
-  comments: Ref<Comment>[];
+  @Property({
+    ref: () => Comment,
+    // type: () => mongoose.Schema.Types.ObjectId,
+    default: [],
+  })
+  comments?: Ref<Comment>[];
 }
 
 export const OrgModel = getModelForClass(Org);

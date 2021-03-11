@@ -18,15 +18,5 @@ app.use(
 
 app.use(currentUser);
 app.use(errorHandler);
-app.get("/api/orgs/foobar", (req, res) => {
-  res.send({
-    headers: req.headers,
-    session: req.session,
-  });
-});
-
-// expressApp.get("*", async () => {
-//   throw new NotFoundError();
-// });
 
 export { app };

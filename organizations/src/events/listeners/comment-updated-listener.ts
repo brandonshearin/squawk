@@ -1,7 +1,7 @@
 import { Message } from "node-nats-streaming";
 import { Subjects, Listener, CommentUpdatedEvent } from "@bscommon/common";
 import { queueGroupName } from "./queue-group-name";
-import { Comment } from "../../models/comment";
+import { CommentModel } from "../../entities/comment";
 
 export class CommentUpdatedEventListener extends Listener<CommentUpdatedEvent> {
   subject: Subjects.CommentUpdated = Subjects.CommentUpdated;
@@ -11,13 +11,15 @@ export class CommentUpdatedEventListener extends Listener<CommentUpdatedEvent> {
     const { id, content } = data;
 
     // step 1: find comment document locally
-    const comment = await Comment.findById(id)
-    if(!comment){
-        console.log("something is terriby wrong. comment id was jank")
-        return
+    const comment = await CommentModel.findById(id);
+    if (!comment) {
+      console.log("something is terriby wrong. comment id was jank");
+      return;
     }
 
-    comment!.content = content
+    console.log(comment);
+
+    comment.content = content;
     await comment.save();
 
     msg.ack();

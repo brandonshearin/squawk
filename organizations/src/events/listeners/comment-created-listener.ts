@@ -1,12 +1,8 @@
 import { Message } from "node-nats-streaming";
-import {
-  Subjects,
-  Listener,
-  CommentCreatedEvent,
-} from "@bscommon/common";
+import { Subjects, Listener, CommentCreatedEvent } from "@bscommon/common";
 import { queueGroupName } from "./queue-group-name";
-import { Organization } from "../../models/organization";
-import { Comment } from "../../models/comment";
+import { OrgModel } from "../../entities/organization";
+import { CommentModel } from "../../entities/comment";
 export class CommentCreatedListener extends Listener<CommentCreatedEvent> {
   subject: Subjects.CommentCreated = Subjects.CommentCreated;
   queueGroupName = queueGroupName;
@@ -14,23 +10,23 @@ export class CommentCreatedListener extends Listener<CommentCreatedEvent> {
     const { id, content, organizationId, userEmail, userId } = data;
 
     // step 1: fetch specified organization
-    const organization = await Organization.findById(organizationId);
+    const organization = await OrgModel.findById(organizationId);
     if (!organization) {
       // TODO: Handle this error better
       console.log("organization is jank");
     }
 
     // step 2: save comment document locally
-    const newComment = Comment.build({
+    const newComment = new CommentModel({
       content,
-      id,
+      _id: id,
       userEmail,
     });
     await newComment.save();
 
     // step 3: add newComment to organizatin doc
     organization?.comments.push(newComment);
-    const resp = await organization?.save();
+    await organization?.save();
 
     msg.ack();
   }
