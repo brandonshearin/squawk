@@ -2,6 +2,21 @@ import mongoose from "mongoose";
 import { app } from "./app";
 import { natsWrapper } from "./nats-wrapper";
 
+import { TypegooseMiddleware } from "./typegoose-middleware";
+import { ApolloServer } from "apollo-server-express";
+import { buildSchema } from "type-graphql";
+
+import { ObjectIdScalar } from "./object-id.scalar";
+import { ObjectId } from "mongodb";
+import { CommentResolver } from "./resolvers/comment-resolver";
+export interface Context {
+  user: {
+    id: string;
+    email: string;
+    iat: number;
+  };
+}
+
 const start = async () => {
   if (!process.env.JWT_KEY) {
     throw new Error("JWT_KEY must be defined");
@@ -51,9 +66,29 @@ const start = async () => {
     console.log(err);
   }
 
-  app.listen(3000, () => {
-    console.log("Listening on port 3000!!!!");
+  const schema = await buildSchema({
+    resolvers: [CommentResolver],
+    emitSchemaFile: true,
+    validate: false,
+    globalMiddlewares: [TypegooseMiddleware],
+    scalarsMap: [{ type: ObjectId, scalar: ObjectIdScalar }],
+  });
+
+  const server = new ApolloServer({
+    schema,
+    context: async ({ req }) => {
+      return {
+        user: req.currentUser,
+      } as Context;
+    },
+  });
+  server.applyMiddleware({ app, path: "/api/comments/graphql" });
+
+  await app.listen(3000, () => {
+    console.log("Listening on port 3000!!!");
   });
 };
 
-start();
+start().catch((error) => {
+  console.log("service failure: ", error);
+});
