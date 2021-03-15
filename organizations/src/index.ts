@@ -5,6 +5,10 @@ import { CommentDeletedEventListener } from "./events/listeners/comment-deleted-
 import { CommentUpdatedEventListener } from "./events/listeners/comment-updated-listener";
 import { natsWrapper } from "./nats-wrapper";
 
+import { buildSchema } from "type-graphql";
+// import { PersonResolver } from "./resolvers/person-resolver";
+import { ApolloServer } from "apollo-server-express";
+import express from "express";
 const start = async () => {
   if (!process.env.JWT_KEY) {
     throw new Error("JWT_KEY must be defined");
