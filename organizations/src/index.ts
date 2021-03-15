@@ -6,9 +6,17 @@ import { CommentUpdatedEventListener } from "./events/listeners/comment-updated-
 import { natsWrapper } from "./nats-wrapper";
 
 import { buildSchema } from "type-graphql";
-// import { PersonResolver } from "./resolvers/person-resolver";
+import { OrgResolver } from "./resolvers/organization-resolver";
+
 import { ApolloServer } from "apollo-server-express";
-import express from "express";
+export interface Context {
+  user: {
+    id: string;
+    email: string;
+    iat: number;
+  };
+}
+
 const start = async () => {
   if (!process.env.JWT_KEY) {
     throw new Error("JWT_KEY must be defined");
@@ -57,14 +65,32 @@ const start = async () => {
         useCreateIndex: true,
       }
     );
-    console.log("connected to mongo");
+    console.log("connected to mongo", process.env.DB_NAME);
   } catch (err) {
     console.log(err);
   }
 
-  app.listen(3000, () => {
+  const schema = await buildSchema({
+    resolvers: [OrgResolver],
+    emitSchemaFile: true,
+    validate: false,
+  });
+
+  const server = new ApolloServer({
+    schema,
+    context: async ({ req }) => {
+      return {
+        user: req.currentUser,
+      } as Context;
+    },
+  });
+  server.applyMiddleware({ app, path: "/api/orgs/graphql" });
+
+  await app.listen(3000, () => {
     console.log("Listening on port 3000!!!");
   });
 };
 
-start();
+start().catch((err) => {
+  console.log("service failure: ", err);
+});
