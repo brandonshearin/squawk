@@ -19,7 +19,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@bscommon/common": "^1.0.20",
+    "@bscommon/common": "1.0.22",
     "@typegoose/typegoose": "^7.6.0",
     "@types/cookie-session": "^2.0.42",
     "@types/express": "^4.17.9",
@@ -28,6 +28,7 @@
     "apollo-server-express": "^2.21.1",
     "class-validator": "^0.13.1",
     "cookie-session": "^1.4.0",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",
     "graphql": "^15.5.0",

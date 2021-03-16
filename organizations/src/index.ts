@@ -6,6 +6,8 @@ import { buildSchema } from "type-graphql";
 import { OrgResolver } from "./resolvers/organization-resolver";
 import { ReviewResolver } from "./resolvers/review-resolver";
 import { ApolloServer } from "apollo-server-express";
+
+require("dotenv").config();
 export interface Context {
   user: {
     id: string;

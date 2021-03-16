@@ -1,13 +1,19 @@
 import buildClient from "../api/build-client";
 import Header from "../components/header";
-import 'antd/dist/antd.css';
+import "antd/dist/antd.css";
+import { ApolloProvider } from "@apollo/client";
+import { useApollo } from "../api/apollo-client";
 
 const AppComponent = ({ Component, pageProps, currentUser }) => {
+  const apolloClient = useApollo(pageProps.initialApolloState);
+
   return (
-    <div>
-      <Header currentUser={currentUser} />
-      <Component {...pageProps} />
-    </div>
+    <ApolloProvider client={apolloClient}>
+      <div>
+        <Header currentUser={currentUser} />
+        <Component {...pageProps} />
+      </div>
+    </ApolloProvider>
   );
 };
 

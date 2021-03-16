@@ -1,10 +1,33 @@
-import buildClient from "../../api/build-client";
-import { Card, Col, Row } from "antd";
+import { Button, Card, Col, Row } from "antd";
 import Link from "next/link";
+import client from "../../api/apollo-client-ssr";
+import { gql, useQuery } from "@apollo/client";
+
+const LIST = gql`
+  query blah {
+    list {
+      id
+      name
+      phone
+      address
+      website
+    }
+  }
+`;
 
 export default function Organizations({ organizations }) {
+
+  const { data, error, loading } = useQuery(LIST);
+  console.log(data, error, loading);
+
   const card = organizations.map((org) => {
-    return (
+    return loading ? (
+      <div>
+      hi
+        {/* {data.list[0].id}
+        {data.list[0].name} */}
+      </div>
+    ) : (
       <Col span={8} key={org.id}>
         <Card
           title={org.name}
@@ -40,11 +63,23 @@ export default function Organizations({ organizations }) {
 }
 
 export async function getStaticProps(context) {
-  const client = buildClient(context);
-  const { data: organizations } = await client.get("/api/orgs");
+  const { data } = await client.query({
+    query: gql`
+      query blah {
+        list {
+          id
+          name
+          phone
+          address
+          website
+        }
+      }
+    `,
+  });
+
   return {
     props: {
-      organizations,
+      organizations: data.list,
     },
     revalidate: 1,
   };
