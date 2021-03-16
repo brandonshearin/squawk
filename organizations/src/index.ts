@@ -1,13 +1,10 @@
 import mongoose from "mongoose";
 import { app } from "./app";
-import { CommentCreatedListener } from "./events/listeners/comment-created-listener";
-import { CommentDeletedEventListener } from "./events/listeners/comment-deleted-listener";
-import { CommentUpdatedEventListener } from "./events/listeners/comment-updated-listener";
 import { natsWrapper } from "./nats-wrapper";
 
 import { buildSchema } from "type-graphql";
 import { OrgResolver } from "./resolvers/organization-resolver";
-
+import { ReviewResolver } from "./resolvers/review-resolver";
 import { ApolloServer } from "apollo-server-express";
 export interface Context {
   user: {
@@ -50,10 +47,6 @@ const start = async () => {
     process.on("SIGINT", () => natsWrapper.client.close());
     process.on("SIGTERM", () => natsWrapper.client.close());
 
-    new CommentCreatedListener(natsWrapper.client).listen();
-    new CommentUpdatedEventListener(natsWrapper.client).listen();
-    new CommentDeletedEventListener(natsWrapper.client).listen();
-
     /* Mongoose internally keeps track of this connection, so that anytime we use 
        mongoose in any other parts of our code, the package is under-the-hood managing
        connecting us to the same instance */
@@ -65,13 +58,13 @@ const start = async () => {
         useCreateIndex: true,
       }
     );
-    console.log("connected to mongo", process.env.DB_NAME);
+    console.log("connected to mongo");
   } catch (err) {
     console.log(err);
   }
 
   const schema = await buildSchema({
-    resolvers: [OrgResolver],
+    resolvers: [OrgResolver, ReviewResolver],
     emitSchemaFile: true,
     validate: false,
   });
