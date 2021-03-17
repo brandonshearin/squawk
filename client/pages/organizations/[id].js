@@ -38,7 +38,6 @@ export async function getStaticPaths() {
 
   return {
     paths: data.list.map((org) => {
-      console.log(org);
       return {
         params: {
           id: org.id,
