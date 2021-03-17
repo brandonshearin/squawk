@@ -1,9 +1,20 @@
 import mongoose from "mongoose";
 import { app } from "./app";
-import { CommentCreatedListener } from "./events/listeners/comment-created-listener";
-import { CommentDeletedEventListener } from "./events/listeners/comment-deleted-listener";
-import { CommentUpdatedEventListener } from "./events/listeners/comment-updated-listener";
 import { natsWrapper } from "./nats-wrapper";
+
+import { buildSchema } from "type-graphql";
+import { OrgResolver } from "./resolvers/organization-resolver";
+import { ReviewResolver } from "./resolvers/review-resolver";
+import { ApolloServer } from "apollo-server-express";
+
+require("dotenv").config();
+export interface Context {
+  user: {
+    id: string;
+    email: string;
+    iat: number;
+  };
+}
 
 const start = async () => {
   if (!process.env.JWT_KEY) {
@@ -38,10 +49,6 @@ const start = async () => {
     process.on("SIGINT", () => natsWrapper.client.close());
     process.on("SIGTERM", () => natsWrapper.client.close());
 
-    new CommentCreatedListener(natsWrapper.client).listen();
-    new CommentUpdatedEventListener(natsWrapper.client).listen();
-    new CommentDeletedEventListener(natsWrapper.client).listen();
-
     /* Mongoose internally keeps track of this connection, so that anytime we use 
        mongoose in any other parts of our code, the package is under-the-hood managing
        connecting us to the same instance */
@@ -58,9 +65,27 @@ const start = async () => {
     console.log(err);
   }
 
-  app.listen(3000, () => {
+  const schema = await buildSchema({
+    resolvers: [OrgResolver, ReviewResolver],
+    emitSchemaFile: true,
+    validate: false,
+  });
+
+  const server = new ApolloServer({
+    schema,
+    context: async ({ req }) => {
+      return {
+        user: req.currentUser,
+      } as Context;
+    },
+  });
+  server.applyMiddleware({ app, path: "/api/orgs/graphql" });
+
+  await app.listen(3000, () => {
     console.log("Listening on port 3000!!!");
   });
 };
 
-start();
+start().catch((err) => {
+  console.log("service failure: ", err);
+});

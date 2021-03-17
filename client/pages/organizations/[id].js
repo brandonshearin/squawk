@@ -1,6 +1,8 @@
-import buildClient from "../../api/build-client";
 import { PageHeader, Grid, Row, Col } from "antd";
 import CommentList from "../../components/comments/commentList";
+import client from "../../api/apollo-client-ssr";
+import { gql } from "@apollo/client";
+
 export default function Organization({ data }) {
   return (
     <>
@@ -21,11 +23,20 @@ export default function Organization({ data }) {
 }
 
 export async function getStaticPaths() {
-  const client = buildClient({});
-  const { data } = await client.get("/api/orgs");
+  const { data } = await client.query({
+    query: gql`
+      query orgIds {
+        list {
+          id
+        }
+      }
+    `,
+  });
 
+  console.log(data.list);
   return {
-    paths: data.map((org) => {
+    paths: data.list.map((org) => {
+      console.log(org);
       return {
         params: {
           id: org.id,
@@ -37,12 +48,24 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  const client = buildClient(params);
-  const { data } = await client.get(`/api/orgs/${params.id}`);
-
+  const { data } = await client.query({
+    query: gql`
+      query org($id: String!) {
+        get(id: $id) {
+          id
+          address
+          city
+          name
+        }
+      }
+    `,
+    variables: {
+      id: params.id,
+    },
+  });
   return {
     props: {
-      data,
+      data: data.get,
     },
     revalidate: 1,
   };
