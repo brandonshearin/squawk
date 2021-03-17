@@ -16,18 +16,11 @@ const LIST = gql`
 `;
 
 export default function Organizations({ organizations }) {
-
   const { data, error, loading } = useQuery(LIST);
   console.log(data, error, loading);
 
   const card = organizations.map((org) => {
-    return loading ? (
-      <div>
-      hi
-        {/* {data.list[0].id}
-        {data.list[0].name} */}
-      </div>
-    ) : (
+    return (
       <Col span={8} key={org.id}>
         <Card
           title={org.name}
