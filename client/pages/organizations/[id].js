@@ -1,20 +1,36 @@
-import { PageHeader, Grid, Row, Col } from "antd";
+import { PageHeader, Descriptions, Row, Col } from "antd";
 import CommentList from "../../components/comments/commentList";
 import client from "../../api/apollo-client-ssr";
 import { gql } from "@apollo/client";
-
-export default function Organization({
-  data = { name: "", address: "", city: "" },
-}) {
-  console.log(data);
+const defaultProps = {
+  name: "",
+  address: "",
+  city: "",
+  state: "",
+  zipcode: "",
+  phone: "",
+  website: "",
+  type: "",
+};
+export default function Organization({ data = defaultProps }) {
   return (
     <>
       <PageHeader
         className="site-page-header"
         onBack={() => window.history.back()}
         title={data?.name}
-        subTitle={`${data?.address}, ${data?.city}`}
-      />
+        subTitle={data.type}
+      >
+        <Descriptions size="small" column={3}>
+          <Descriptions.Item label="Address">{`${data.address}, ${data.city}, ${data.state}`}</Descriptions.Item>
+          <Descriptions.Item label="Phone">
+            <a>{data.phone}</a>
+          </Descriptions.Item>
+          <Descriptions.Item label="Website">
+            <a href={data.website} target="_blank">{data.website}</a>
+          </Descriptions.Item>
+        </Descriptions>
+      </PageHeader>
 
       <Row>
         <Col span={12} offset={6}>
@@ -56,7 +72,11 @@ export async function getStaticProps({ params }) {
           id
           address
           city
+          state
           name
+          phone
+          website
+          type
         }
       }
     `,

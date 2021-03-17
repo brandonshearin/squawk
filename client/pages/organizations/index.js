@@ -2,6 +2,7 @@ import { Button, Card, Col, Row } from "antd";
 import Link from "next/link";
 import client from "../../api/apollo-client-ssr";
 import { gql, useQuery } from "@apollo/client";
+import { useState } from "react";
 
 const LIST = gql`
   query blah {
@@ -17,15 +18,51 @@ const LIST = gql`
 
 export default function Organizations({
   organizations = [
-    { id: "", name: "", address: "", city: "", phone: "", website: "" },
+    {
+      id: "",
+      name: "",
+      address: "",
+      city: "",
+      state: "",
+      phone: "",
+      website: "",
+    },
   ],
 }) {
   const { data, error, loading } = useQuery(LIST);
-  console.log(data, error, loading);
 
   const card = organizations.map((org) => {
+    const tabList = [
+      {
+        key: "tab1",
+        tab: "Region",
+      },
+      {
+        key: "tab2",
+        tab: "Contact",
+      },
+    ];
+    const contentList = {
+      tab1: <p>{`${org.address}, ${org.city}, ${org.state}`}</p>,
+      tab2: (
+        <>
+          <p>Phone: {org.phone}</p>
+          <p>Website: {org.website}</p>
+        </>
+      ),
+    };
+
+    const [state, setState] = useState({
+      key: "tab1",
+      noTitleKey: "app",
+    });
+
+    const onTabChange = (key, type) => {
+      console.log(key, type);
+      setState({ [type]: key });
+    };
     return (
-      <Col span={8} key={org.id}>
+      <Col span={8} key={org.id} xs={24} sm={12} md={8} lg={6}>
         <Card
           title={org.name}
           extra={
@@ -34,13 +71,13 @@ export default function Organizations({
             </Link>
           }
           hoverable
-          loading={!org.name}
+          tabList={tabList}
+          activeTabKey={state.key}
+          onTabChange={(key) => {
+            onTabChange(key, "key");
+          }}
         >
-          {`${org.address}, ${org.city}`}
-          {`\n`}
-          Phone: {org.phone}
-          {`\n`}
-          Website: {org.website}
+          {contentList[state.key]}
         </Card>
       </Col>
     );
@@ -66,6 +103,8 @@ export async function getStaticProps(context) {
         list {
           id
           name
+          city
+          state
           phone
           address
           website
