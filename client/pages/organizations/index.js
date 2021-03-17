@@ -15,7 +15,11 @@ const LIST = gql`
   }
 `;
 
-export default function Organizations({ organizations }) {
+export default function Organizations({
+  organizations = [
+    { id: "", name: "", address: "", city: "", phone: "", website: "" },
+  ],
+}) {
   const { data, error, loading } = useQuery(LIST);
   console.log(data, error, loading);
 

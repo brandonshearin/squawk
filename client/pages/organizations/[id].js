@@ -3,7 +3,9 @@ import CommentList from "../../components/comments/commentList";
 import client from "../../api/apollo-client-ssr";
 import { gql } from "@apollo/client";
 
-export default function Organization({ data }) {
+export default function Organization({
+  data = { name: "", address: "", city: "" },
+}) {
   return (
     <>
       <PageHeader
