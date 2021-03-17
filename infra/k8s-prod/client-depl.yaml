@@ -16,10 +16,10 @@ spec:
         - name: client
           image: brandonshearin/client-prod
           env:
-            - name: BASE_URL
-              value: "http://squawktherapy.com"
-            - name: HOST
-              value: "www.squawktherapy.com"
+            # - name: BASE_URL
+            #   value: "http://squawktherapy.com"
+            # - name: HOST
+            #   value: "www.squawktherapy.com"
             - name: CLIENT_SIDE_URL
               value: "https://www.squawktherapy.com"
 
