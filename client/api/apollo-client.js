@@ -3,10 +3,15 @@ import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
 
 let apolloClient;
 
+/*
+  We will define BASE_URL in the local docker file, but when
+  we are running outside of our cluster locally, or on DO, we will
+  use the second url
+*/
 const uri = process.env.BASE_URL
   ? `https://squawk.dev/api/orgs/graphql`
   : "https://www.squawktherapy.com/api/orgs/graphql";
-console.log(process.env.BASE_URL, uri);
+
 function createApolloClient() {
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
