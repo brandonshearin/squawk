@@ -6,6 +6,7 @@ import { gql } from "@apollo/client";
 export default function Organization({
   data = { name: "", address: "", city: "" },
 }) {
+  console.log(data);
   return (
     <>
       <PageHeader
@@ -35,13 +36,13 @@ export async function getStaticPaths() {
     `,
   });
 
-  console.log(data.list);
   return {
     paths: data.list.map((org) => {
       console.log(org);
       return {
         params: {
-          id: org.id,
+          // id: org.id,
+          id: "604f817a174d94005f90bebf",
         },
       };
     }),
@@ -62,7 +63,8 @@ export async function getStaticProps({ params }) {
       }
     `,
     variables: {
-      id: params.id,
+      // id: params.id,
+      id: "604f817a174d94005f90bebf",
     },
   });
   return {

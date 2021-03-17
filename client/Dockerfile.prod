@@ -7,7 +7,8 @@ COPY . .
 FROM base AS build
 ENV NODE_ENV=production
 ENV HOST="www.squawktherapy.com"
-ENV BASE_URL="http://squawktherapy.com/api/orgs/graphql"
+ENV BASE_URL="http://squawktherapy.com"
+ENV CLIENT_SIDE_URL="https://www.squawktherapy.com"
 WORKDIR /build
 COPY --from=base /base ./
 RUN npm run build

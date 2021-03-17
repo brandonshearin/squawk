@@ -7,7 +7,7 @@ function createApolloClient() {
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
     link: new HttpLink({
-      uri: "https://squawk.dev/api/orgs/graphql",
+      uri: `${process.env.CLIENT_SIDE_URL}/api/orgs/graphql`,
     }),
     cache: new InMemoryCache(),
   });
