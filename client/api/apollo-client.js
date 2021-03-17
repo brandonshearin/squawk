@@ -3,11 +3,16 @@ import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
 
 let apolloClient;
 
+const uri =
+  process.env.NODE_ENV === "development"
+    ? `https://squawk.dev/api/orgs/graphql`
+    : "https://www.squawktherapy.com/api/orgs/graphql";
+
 function createApolloClient() {
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
     link: new HttpLink({
-      uri: `${process.env.CLIENT_SIDE_URL}/api/orgs/graphql`,
+      uri,
     }),
     cache: new InMemoryCache(),
   });
