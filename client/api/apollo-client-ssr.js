@@ -1,8 +1,9 @@
 import { ApolloClient, InMemoryCache } from "@apollo/client";
 
 const client = new ApolloClient({
-  uri: `${process.env.BASE_URL}/api/orgs/graphql`,
-  headers: { Host: process.env.HOST },
+  // uri: `${process.env.BASE_URL}/api/orgs/graphql`,
+  uri: "http://www.squawktherapy.com/api/orgs/graphql",
+  headers: { Host: "www.squawktherapy.com" },
   cache: new InMemoryCache(),
 });
 
