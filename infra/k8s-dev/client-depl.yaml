@@ -20,6 +20,8 @@ spec:
               value: "http://ingress-nginx-controller.ingress-nginx.svc.cluster.local"
             - name: HOST
               value: "squawk.dev"
+            - name: CLIENT_SIDE_URL
+              value: "https://squawk.dev/api/orgs/graphql"
 ---
 apiVersion: v1
 kind: Service

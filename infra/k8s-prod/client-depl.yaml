@@ -20,6 +20,9 @@ spec:
               value: "http://squawktherapy.com"
             - name: HOST
               value: "www.squawktherapy.com"
+            - name: CLIENT_SIDE_URL
+              value: "https://www.squawktherapy.com/api/orgs/graphql"
+
 ---
 apiVersion: v1
 kind: Service
