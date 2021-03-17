@@ -20,8 +20,8 @@ export default function Organizations({
     { id: "", name: "", address: "", city: "", phone: "", website: "" },
   ],
 }) {
-  // const { data, error, loading } = useQuery(LIST);
-  // console.log(data, error, loading);
+  const { data, error, loading } = useQuery(LIST);
+  console.log(data, error, loading);
 
   const card = organizations.map((org) => {
     return (

@@ -41,8 +41,7 @@ export async function getStaticPaths() {
       console.log(org);
       return {
         params: {
-          // id: org.id,
-          id: "604f817a174d94005f90bebf",
+          id: org.id,
         },
       };
     }),
@@ -63,8 +62,7 @@ export async function getStaticProps({ params }) {
       }
     `,
     variables: {
-      // id: params.id,
-      id: "604f817a174d94005f90bebf",
+      id: params.id,
     },
   });
   return {
