@@ -8,7 +8,10 @@ import {
   LikeFilled,
 } from "@ant-design/icons";
 
-export default function SquawkComment() {
+
+
+export default function Review({ review }) {
+  const { userEmail, content, rating, id } = review;
   const [likes, setLikes] = useState(0);
   const [dislikes, setDislikes] = useState(0);
   const [action, setAction] = useState(null);
@@ -40,26 +43,19 @@ export default function SquawkComment() {
         <span className="comment-action">{dislikes}</span>
       </span>
     </Tooltip>,
-    <span key="comment-basic-reply-to">Reply to</span>,
   ];
 
   return (
     <Comment
       actions={actions}
-      author={<a>Han Solo</a>}
+      author={<a>{userEmail}</a>}
       avatar={
         <Avatar
           src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
           alt="Han Solo"
         />
       }
-      content={
-        <p>
-          This is some sample text. i Am leaving a comment here for others to
-          see. Will anybody see my comment? I do not know. I sure hope somebody
-          sees it ant leaves it a like.
-        </p>
-      }
+      content={<p>{content}</p>}
       datetime={
         <Tooltip title={moment().format("YYYY-MM-DD HH:mm:ss")}>
           <span>{moment().fromNow()}</span>

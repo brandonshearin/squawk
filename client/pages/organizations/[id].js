@@ -1,7 +1,7 @@
 import { PageHeader, Descriptions, Row, Col } from "antd";
-import CommentList from "../../components/comments/commentList";
+import ReviewList from "../../components/comments/ReviewList";
 import client from "../../api/apollo-client-ssr";
-import { gql } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
 const defaultProps = {
   name: "",
   address: "",
@@ -12,7 +12,28 @@ const defaultProps = {
   website: "",
   type: "",
 };
+
+const GET_REVIEWS = gql`
+  query GetReviews($id: String!) {
+    get(id: $id) {
+      reviews {
+        id
+        userId
+        organizationId
+        userEmail
+        rating
+        content
+      }
+    }
+  }
+`;
 export default function Organization({ data = defaultProps }) {
+  const { data: reviews, loading, error } = useQuery(GET_REVIEWS, {
+    variables: { id: data.id },
+  });
+
+  if (error) return `Error! ${error.message}`;
+
   return (
     <>
       <PageHeader
@@ -21,20 +42,26 @@ export default function Organization({ data = defaultProps }) {
         title={data?.name}
         subTitle={data.type}
       >
-        <Descriptions size="small" column={3}>
+        <Descriptions>
           <Descriptions.Item label="Address">{`${data.address}, ${data.city}, ${data.state}`}</Descriptions.Item>
+        </Descriptions>
+        <Descriptions>
           <Descriptions.Item label="Phone">
             <a>{data.phone}</a>
           </Descriptions.Item>
+        </Descriptions>
+        <Descriptions>
           <Descriptions.Item label="Website">
-            <a href={data.website} target="_blank">{data.website}</a>
+            <a href={data.website} target="_blank">
+              {data.website}
+            </a>
           </Descriptions.Item>
         </Descriptions>
       </PageHeader>
 
       <Row>
         <Col span={12} offset={6}>
-          <CommentList />
+          {loading ? "Loading ..." : <ReviewList reviews={reviews.get} />}
         </Col>
       </Row>
     </>
