@@ -6,7 +6,12 @@ var cors = require("cors");
 import { currentUser, errorHandler } from "@bscommon/common";
 
 const app = express();
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+    credentials: true,
+  })
+);
 app.set("trust proxy", true);
 app.use(json());
 app.use(
