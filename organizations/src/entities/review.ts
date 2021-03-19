@@ -15,6 +15,7 @@ import {
         return ret;
       },
     },
+    timestamps: { createdAt: true, updatedAt: true },
   },
 })
 export class Review {
@@ -29,17 +30,28 @@ export class Review {
   @Property()
   userId: string;
 
-  @Field()
+  @Field({ nullable: true, defaultValue: "User only provided a rating" })
   @Property()
-  content: string;
+  content?: string;
 
   @Field()
   @Property()
   userEmail: string;
 
-  @Field()
-  @Property()
+  @Field({ defaultValue: 3 })
+  @Property({ default: 3 })
   rating: number;
+
+  @Field(() => Date)
+  createdAt: Date;
+
+  @Field({ defaultValue: 0 })
+  @Property({ default: 0, min: 0 })
+  likes: number;
+
+  @Field({ defaultValue: 0 })
+  @Property({ default: 0, min: 0 })
+  dislikes: number;
 }
 
 export const ReviewModel = getModelForClass(Review);

@@ -1,4 +1,4 @@
-import { Mutation, Arg, Ctx } from "type-graphql";
+import { Mutation, Arg, Ctx, Int } from "type-graphql";
 import { AddReviewInput } from "./inputs/add-review-input";
 import { Context } from "../index";
 import { Review, ReviewModel } from "../entities/review";
@@ -22,11 +22,64 @@ export class ReviewResolver {
       ...newReview,
       userId: ctx.user.id,
       userEmail: ctx.user.email,
-    });
+    } as Review);
 
     // step 3: update org
     org.reviews?.push(review.id);
     await org.save();
     return review;
+  }
+
+  @Mutation(() => Review)
+  async editReview(
+    @Arg("id") id: string,
+    @Arg("content") content: string,
+    @Arg("rating") rating: number,
+    @Ctx() ctx: Context
+  ) {
+    // if not logged in, throw error
+    if (!ctx.user) {
+      throw new NotAuthorizedError();
+    }
+
+    const review = await ReviewModel.findById(id);
+    if (!review) {
+      throw new NotFoundError();
+    }
+
+    if (review.userId !== ctx.user.id) {
+      throw new NotAuthorizedError();
+    }
+
+    review.content = content;
+    review.rating = rating;
+    await review.save();
+
+    return review;
+  }
+
+  @Mutation(() => Int)
+  async deleteReview(@Arg("id") id: string, @Ctx() ctx: Context) {
+    if (!ctx.user) {
+      throw new NotAuthorizedError();
+    }
+    const review = await ReviewModel.deleteOne({
+      _id: id,
+      userId: ctx.user.id,
+    });
+    if (review.deletedCount) {
+      return 1;
+    }
+    return 0;
+  }
+
+  @Mutation(() => Int)
+  async like(@Arg("id") id: string, @Ctx() ctx: Context) {
+    if (!ctx.user) {
+      throw new NotAuthorizedError();
+    }
+
+    const review = await ReviewModel.findById(id);
+    return 1;
   }
 }

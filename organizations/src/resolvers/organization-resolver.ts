@@ -41,7 +41,9 @@ export class OrgResolver {
     description: "fetch the reviews associated with an organization",
   })
   async reviews(@Root("id") orgId: string) {
-    const reviews = await ReviewModel.find({ organizationId: orgId });
+    const reviews = await ReviewModel.find({ organizationId: orgId }).sort({
+      createdAt: -1,
+    });
     return reviews;
   }
 }

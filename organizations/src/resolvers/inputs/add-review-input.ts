@@ -5,7 +5,7 @@ export class AddReviewInput {
   @Field()
   organizationId: string;
 
-  @Field()
+  @Field({ nullable: true })
   content: string;
 
   @Field()
