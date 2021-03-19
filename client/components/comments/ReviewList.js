@@ -11,18 +11,20 @@ const ADD_REVIEW = gql`
     addReview(data: $data) {
       id
       userEmail
+      userId
+      organizationId
       content
       rating
     }
   }
 `;
-const ReviewListHeader = ({ organizationId }) => {
+
+const ReviewListHeader = ({ organizationId, addReview }) => {
   const desc = ["terrible", "bad", "normal", "good", "wonderful"];
   const [showTextArea, setShowTextArea] = useState(false);
   const [text, setText] = useState("");
   const [rate, setRate] = useState(3);
 
-  const [addReview, { data }] = useMutation(ADD_REVIEW);
   const submitReview = () => {
     addReview({
       variables: {
@@ -33,7 +35,6 @@ const ReviewListHeader = ({ organizationId }) => {
         },
       },
     });
-    console.log(text, rate, organizationId);
   };
 
   return (
@@ -85,12 +86,28 @@ const ReviewListHeader = ({ organizationId }) => {
 };
 
 export default function ReviewList({ reviews }) {
-  const list = reviews.reviews || [];
-  const organizationId = list[0].organizationId;
+  const [list, setList] = useState(reviews.reviews || []);
+  // let list = reviews.reviews || [];
+  const organizationId = list[0]?.organizationId;
+
+  const [addReview, { data, loading, error }] = useMutation(ADD_REVIEW, {
+    update: (_, { data }) => {
+      const { addReview: newReview } = data;
+      console.log(list);
+      console.log(newReview);
+      setList([...list, newReview]);
+      console.log(list);
+    },
+  });
 
   return (
     <List
-      header={<ReviewListHeader organizationId={organizationId} />}
+      header={
+        <ReviewListHeader
+          organizationId={organizationId}
+          addReview={addReview}
+        />
+      }
       itemLayout="vertical"
     >
       {list.map((review) => {
