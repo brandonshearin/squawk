@@ -1,5 +1,5 @@
-import React, { createElement, useState } from "react";
-import { Comment, Tooltip, Avatar, List, Input } from "antd";
+import React, { createElement, useState, useContext } from "react";
+import { Comment, Tooltip, Avatar, List, Input, Button } from "antd";
 import moment from "moment";
 import {
   DislikeOutlined,
@@ -8,6 +8,7 @@ import {
   LikeFilled,
 } from "@ant-design/icons";
 import { gql, useMutation } from "@apollo/client";
+import { UserContext } from "../../hooks/UserContext";
 
 const { TextArea } = Input;
 
@@ -29,6 +30,8 @@ export default function Review({ review, onDelete }) {
   const [action, setAction] = useState(null);
   const [editing, setEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(content);
+
+  const { currentUser } = useContext(UserContext);
 
   const [editReview, { data }] = useMutation(EDIT_REVIEW, {
     update: (_, { data }) => {
@@ -69,7 +72,9 @@ export default function Review({ review, onDelete }) {
   return (
     <List.Item
       actions={[
-        <a
+        <Button
+          type="link"
+          hidden={review.userId !== currentUser?.id}
           key="list-edit"
           onClick={() => {
             if (editing) {
@@ -89,9 +94,11 @@ export default function Review({ review, onDelete }) {
           }}
         >
           {editing ? "finish" : "edit"}
-        </a>,
-        <a
+        </Button>,
+        <Button
+          type="link"
           key="list-delete"
+          hidden={review.userId !== currentUser?.id}
           onClick={() => {
             if (editing) {
               // cancel the edit
@@ -108,7 +115,7 @@ export default function Review({ review, onDelete }) {
           style={{ color: "red" }}
         >
           {editing ? "cancel" : "delete"}
-        </a>,
+        </Button>,
       ]}
     >
       <Comment

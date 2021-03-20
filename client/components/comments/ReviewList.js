@@ -2,10 +2,10 @@ import { Row, Col, List, Button, Input, Space, Rate } from "antd";
 
 import Review from "./Review";
 const { TextArea } = Input;
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 import { gql, useMutation } from "@apollo/client";
-
+import { UserContext } from "../../hooks/UserContext";
 const ADD_REVIEW = gql`
   mutation AddReview($data: AddReviewInput!) {
     addReview(data: $data) {
@@ -31,6 +31,8 @@ const ReviewListHeader = ({ organizationId, addReview }) => {
   const [text, setText] = useState("");
   const [rate, setRate] = useState(3);
 
+  const { currentUser } = useContext(UserContext);
+
   const submitReview = () => {
     addReview({
       variables: {
@@ -52,6 +54,7 @@ const ReviewListHeader = ({ organizationId, addReview }) => {
             type={"primary"}
             onClick={() => setShowTextArea(!showTextArea)}
             hidden={showTextArea}
+            disabled={!currentUser}
           >
             Add Review
           </Button>

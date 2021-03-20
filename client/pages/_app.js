@@ -3,16 +3,17 @@ import Header from "../components/header";
 import "antd/dist/antd.css";
 import { ApolloProvider } from "@apollo/client";
 import { useApollo } from "../api/apollo-client";
-
+import { UserContext } from "../hooks/UserContext";
 const AppComponent = ({ Component, pageProps, currentUser }) => {
   const apolloClient = useApollo(pageProps.initialApolloState);
 
+  pageProps = { ...pageProps, currentUser };
   return (
     <ApolloProvider client={apolloClient}>
-      <div>
+      <UserContext.Provider value={{ currentUser }}>
         <Header currentUser={currentUser} />
         <Component {...pageProps} />
-      </div>
+      </UserContext.Provider>
     </ApolloProvider>
   );
 };
