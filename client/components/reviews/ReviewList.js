@@ -54,7 +54,7 @@ const ReviewListHeader = ({ organizationId, addReview }) => {
             type={"primary"}
             onClick={() => setShowTextArea(!showTextArea)}
             hidden={showTextArea}
-            disabled={!currentUser}
+            // disabled={!currentUser}
           >
             Add Review
           </Button>
@@ -64,8 +64,8 @@ const ReviewListHeader = ({ organizationId, addReview }) => {
       {showTextArea && (
         <>
           <Space direction={"vertical"} style={{ width: "100%" }}>
-            <Row justify={"space-around"}>
-              <Col xs={23}>
+            <Row>
+              <Col span={24}>
                 <TextArea
                   autoSize={{ minRows: 4 }}
                   value={text}
@@ -74,18 +74,21 @@ const ReviewListHeader = ({ organizationId, addReview }) => {
               </Col>
             </Row>
             <Row justify={"end"}>
-              <Col xs={6}>
-                <Rate
-                  tooltips={desc}
-                  onChange={(value) => setRate(value)}
-                  value={rate}
-                />
+              <Col>
+                <Space>
+                  <Rate
+                    tooltips={desc}
+                    onChange={(value) => setRate(value)}
+                    value={rate}
+                  />
+                  <Button type="primary" onClick={submitReview}>
+                    Leave Review!
+                  </Button>
+                </Space>
               </Col>
-              <Col xs={6}>
-                <Button type="primary" onClick={submitReview}>
-                  Leave Review!
-                </Button>
-              </Col>
+              {/* <Col xs={6}>
+                
+              </Col> */}
             </Row>
           </Space>
         </>

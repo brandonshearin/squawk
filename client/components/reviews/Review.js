@@ -1,5 +1,5 @@
 import React, { createElement, useState, useContext } from "react";
-import { Comment, Tooltip, Avatar, List, Input, Button } from "antd";
+import { Comment, Tooltip, Avatar, List, Input, Button, Rate } from "antd";
 import moment from "moment";
 import {
   DislikeOutlined,
@@ -23,6 +23,7 @@ const EDIT_REVIEW = gql`
 `;
 
 export default function Review({ review, onDelete }) {
+  console.log(review);
   const { userEmail, rating, id } = review;
   const [content, setContent] = useState(review.content);
   const [likes, setLikes] = useState(0);
@@ -135,12 +136,15 @@ export default function Review({ review, onDelete }) {
               onChange={(e) => setEditedContent(e.target.value)}
             />
           ) : (
-            <p>{content}</p>
+            <>
+              <p>{content}</p>
+              <Rate disabled value={rating} />
+            </>
           )
         }
         datetime={
-          <Tooltip title={moment().format("YYYY-MM-DD HH:mm:ss")}>
-            <span>{moment().fromNow()}</span>
+          <Tooltip title={new Date(review.createdAt).toDateString()}>
+            <span>{moment(new Date(review.createdAt)).fromNow()}</span>
           </Tooltip>
         }
       />

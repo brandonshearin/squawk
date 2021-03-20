@@ -1,5 +1,5 @@
 import { PageHeader, Descriptions, Row, Col } from "antd";
-import ReviewList from "../../components/comments/ReviewList";
+import ReviewList from "../../components/reviews/ReviewList";
 import client from "../../api/apollo-client-ssr";
 import { gql, useQuery } from "@apollo/client";
 const defaultProps = {
@@ -23,6 +23,7 @@ const GET_REVIEWS = gql`
         userEmail
         rating
         content
+        createdAt
       }
     }
   }
