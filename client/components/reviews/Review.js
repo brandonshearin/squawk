@@ -24,7 +24,8 @@ const EDIT_REVIEW = gql`
 
 export default function Review({ review, onDelete }) {
   console.log(review);
-  const { userEmail, rating, id } = review;
+  const { userEmail, id } = review;
+  const [rating, setRating] = useState(review.rating);
   const [content, setContent] = useState(review.content);
   const [likes, setLikes] = useState(0);
   const [dislikes, setDislikes] = useState(0);
@@ -130,11 +131,14 @@ export default function Review({ review, onDelete }) {
         }
         content={
           editing ? (
-            <TextArea
-              autoSize
-              defaultValue={content}
-              onChange={(e) => setEditedContent(e.target.value)}
-            />
+            <>
+              <TextArea
+                autoSize
+                defaultValue={content}
+                onChange={(e) => setEditedContent(e.target.value)}
+              />
+              <Rate onChange={(value) => setRating(value)} value={rating} />
+            </>
           ) : (
             <>
               <p>{content}</p>

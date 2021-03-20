@@ -15,6 +15,7 @@ const ADD_REVIEW = gql`
       organizationId
       content
       rating
+      createdAt
     }
   }
 `;
@@ -86,9 +87,6 @@ const ReviewListHeader = ({ organizationId, addReview }) => {
                   </Button>
                 </Space>
               </Col>
-              {/* <Col xs={6}>
-                
-              </Col> */}
             </Row>
           </Space>
         </>
