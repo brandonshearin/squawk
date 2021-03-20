@@ -19,6 +19,12 @@ const ADD_REVIEW = gql`
   }
 `;
 
+const DELETE_REVIEW = gql`
+  mutation DeleteReview($id: String!) {
+    deleteReview(id: $id)
+  }
+`;
+
 const ReviewListHeader = ({ organizationId, addReview }) => {
   const desc = ["terrible", "bad", "normal", "good", "wonderful"];
   const [showTextArea, setShowTextArea] = useState(false);
@@ -85,34 +91,30 @@ const ReviewListHeader = ({ organizationId, addReview }) => {
   );
 };
 
-export default function ReviewList({ reviews }) {
+export default function ReviewList({ reviews, orgId }) {
   const [list, setList] = useState(reviews.reviews || []);
-  // let list = reviews.reviews || [];
-  const organizationId = list[0]?.organizationId;
 
   const [addReview, { data, loading, error }] = useMutation(ADD_REVIEW, {
     update: (_, { data }) => {
       const { addReview: newReview } = data;
-      console.log(list);
-      console.log(newReview);
-      setList([...list, newReview]);
-      console.log(list);
+      setList([newReview, ...list]);
+    },
+  });
+
+  const [deleteReview] = useMutation(DELETE_REVIEW, {
+    update: (_, { data }) => {
+      setList(list.filter((item) => item.id !== data.deleteReview));
     },
   });
 
   return (
     <List
-      header={
-        <ReviewListHeader
-          organizationId={organizationId}
-          addReview={addReview}
-        />
-      }
-      itemLayout="vertical"
-    >
-      {list.map((review) => {
-        return <Review review={review} key={review.id} />;
-      })}
-    </List>
+      header={<ReviewListHeader organizationId={orgId} addReview={addReview} />}
+      itemLayout="horizontal"
+      dataSource={list}
+      renderItem={(item) => (
+        <Review review={item} key={item.id} onDelete={deleteReview} />
+      )}
+    ></List>
   );
 }

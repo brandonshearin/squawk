@@ -14,7 +14,7 @@ const Signup = () => {
       password,
     },
     onSuccess: () => {
-      Router.push("/");
+      Router.push("/organizations");
     },
   });
 

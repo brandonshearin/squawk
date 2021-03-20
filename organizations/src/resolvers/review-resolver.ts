@@ -33,7 +33,7 @@ export class ReviewResolver {
   @Mutation(() => Review)
   async editReview(
     @Arg("id") id: string,
-    @Arg("content") content: string,
+    @Arg("content", { nullable: true }) content: string,
     @Arg("rating") rating: number,
     @Ctx() ctx: Context
   ) {
@@ -58,7 +58,7 @@ export class ReviewResolver {
     return review;
   }
 
-  @Mutation(() => Int)
+  @Mutation(() => String)
   async deleteReview(@Arg("id") id: string, @Ctx() ctx: Context) {
     if (!ctx.user) {
       throw new NotAuthorizedError();
@@ -68,9 +68,9 @@ export class ReviewResolver {
       userId: ctx.user.id,
     });
     if (review.deletedCount) {
-      return 1;
+      return id;
     }
-    return 0;
+    return "";
   }
 
   @Mutation(() => Int)

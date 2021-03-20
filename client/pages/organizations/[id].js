@@ -61,7 +61,11 @@ export default function Organization({ data = defaultProps }) {
 
       <Row>
         <Col span={12} offset={6}>
-          {loading ? "Loading ..." : <ReviewList reviews={reviews.get} />}
+          {loading ? (
+            "Loading ..."
+          ) : (
+            <ReviewList reviews={reviews.get} orgId={data.id} />
+          )}
         </Col>
       </Row>
     </>

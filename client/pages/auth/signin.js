@@ -14,7 +14,7 @@ const Signin = () => {
       password,
     },
     onSuccess: () => {
-      Router.push("/");
+      Router.push("/organizations");
     },
   });
 
