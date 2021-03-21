@@ -3,9 +3,11 @@ import "express-async-errors";
 import { json } from "body-parser";
 import cookieSession from "cookie-session";
 var cors = require("cors");
+var cookieParser = require("cookie-parser");
 import { currentUser, errorHandler } from "@bscommon/common";
 
 const app = express();
+app.use(cookieParser());
 app.use(
   cors({
     origin: "*",

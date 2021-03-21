@@ -12,10 +12,10 @@ const AppComponent = ({ Component, pageProps, currentUser }) => {
   return (
     <ApolloProvider client={apolloClient}>
       <Provider session={pageProps.session}>
-        {/* <UserContext.Provider value={{ currentUser }}> */}
+        <UserContext.Provider value={{ currentUser }}>
         <Header currentUser={currentUser} />
         <Component {...pageProps} />
-        {/* </UserContext.Provider> */}
+        </UserContext.Provider>
       </Provider>
     </ApolloProvider>
   );

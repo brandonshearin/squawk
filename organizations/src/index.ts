@@ -6,11 +6,12 @@ import { buildSchema } from "type-graphql";
 import { OrgResolver } from "./resolvers/organization-resolver";
 import { ReviewResolver } from "./resolvers/review-resolver";
 import { ApolloServer } from "apollo-server-express";
-
+import jwt from "jsonwebtoken";
 require("dotenv").config();
 export interface Context {
   user: {
     id: string;
+    name: string;
     email: string;
     iat: number;
   };
@@ -74,10 +75,12 @@ const start = async () => {
   const server = new ApolloServer({
     schema,
     context: async ({ req }) => {
-      console.log(req.session);
-      return {
-        user: req.currentUser,
-      } as Context;
+      const payload = jwt.decode(
+        req.cookies["next-auth.session-token"]
+      ) as Context;
+      console.log(payload)
+
+      return payload;
     },
   });
   server.applyMiddleware({ app, path: "/api/orgs/graphql" });
