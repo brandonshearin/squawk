@@ -4,23 +4,27 @@ import "antd/dist/antd.css";
 import { ApolloProvider } from "@apollo/client";
 import { useApollo } from "../api/apollo-client";
 import { UserContext } from "../hooks/UserContext";
+import { Provider } from "next-auth/client";
 const AppComponent = ({ Component, pageProps, currentUser }) => {
   const apolloClient = useApollo(pageProps.initialApolloState);
 
   pageProps = { ...pageProps, currentUser };
   return (
     <ApolloProvider client={apolloClient}>
-      <UserContext.Provider value={{ currentUser }}>
+      <Provider session={pageProps.session}>
+        {/* <UserContext.Provider value={{ currentUser }}> */}
         <Header currentUser={currentUser} />
         <Component {...pageProps} />
-      </UserContext.Provider>
+        {/* </UserContext.Provider> */}
+      </Provider>
     </ApolloProvider>
   );
 };
 
 AppComponent.getInitialProps = async (appContext) => {
   const client = buildClient(appContext.ctx);
-  const { data } = await client.get("/api/users/currentuser");
+  const data = {}
+  // const { data } = await client.get("/api/users/currentuser");
 
   // we need the following lines so that the getInitialProps function
   // on any individual component is invoked

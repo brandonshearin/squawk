@@ -74,6 +74,7 @@ const start = async () => {
   const server = new ApolloServer({
     schema,
     context: async ({ req }) => {
+      console.log(req.session);
       return {
         user: req.currentUser,
       } as Context;
