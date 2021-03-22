@@ -8,7 +8,7 @@ import {
   LikeFilled,
 } from "@ant-design/icons";
 import { gql, useMutation } from "@apollo/client";
-import { UserContext } from "../../hooks/UserContext";
+import { useSession } from "next-auth/client";
 
 const { TextArea } = Input;
 
@@ -22,8 +22,7 @@ const EDIT_REVIEW = gql`
   }
 `;
 
-export default function Review({ review, onDelete }) {
-  console.log(review);
+export default function Review({ review, onDelete, session }) {
   const { userEmail, id } = review;
   const [rating, setRating] = useState(review.rating);
   const [content, setContent] = useState(review.content);
@@ -32,8 +31,6 @@ export default function Review({ review, onDelete }) {
   const [action, setAction] = useState(null);
   const [editing, setEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(content);
-
-  const { currentUser } = useContext(UserContext);
 
   const [editReview, { data }] = useMutation(EDIT_REVIEW, {
     update: (_, { data }) => {
@@ -76,7 +73,7 @@ export default function Review({ review, onDelete }) {
       actions={[
         <Button
           type="link"
-          hidden={review.userId !== currentUser?.id}
+          hidden={review.userId !== session?.user.id}
           key="list-edit"
           onClick={() => {
             if (editing) {
@@ -100,7 +97,7 @@ export default function Review({ review, onDelete }) {
         <Button
           type="link"
           key="list-delete"
-          hidden={review.userId !== currentUser?.id}
+          hidden={review.userId !== session?.user.id}
           onClick={() => {
             if (editing) {
               // cancel the edit

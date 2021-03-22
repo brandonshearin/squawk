@@ -78,9 +78,9 @@ const start = async () => {
       const payload = jwt.decode(
         req.cookies["next-auth.session-token"]
       ) as Context;
-      console.log(payload)
+      console.log(payload);
 
-      return payload;
+      return { user: payload };
     },
   });
   server.applyMiddleware({ app, path: "/api/orgs/graphql" });

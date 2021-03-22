@@ -40,7 +40,7 @@ const options = {
   database: process.env.DATABASE_URL,
   callbacks: {
     async session(session, user) {
-      session.id = user.id;
+      session.user.id = user.id;
       return Promise.resolve(session);
     },
     async jwt(token, user, account, profile, isNewUser) {
@@ -57,7 +57,6 @@ const options = {
   },
   jwt: {
     cookieName: "currentUser",
-    secret: process.env.SECRET,
   },
 };
 

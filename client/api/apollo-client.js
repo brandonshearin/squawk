@@ -8,26 +8,26 @@ let apolloClient;
   we are running outside of our cluster locally, or on DO, we will
   use the second url
 */
-// function createApolloClient() {
-//   return new ApolloClient({
-//     ssrMode: typeof window === "undefined",
-//     link: new HttpLink({
-//       uri: "https://www.squawktherapy.com/api/orgs/graphql",
-//     }),
-//     cache: new InMemoryCache(),
-//   });
-// }
-
-// for local dev with skaffold
 function createApolloClient() {
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
     link: new HttpLink({
-      uri: `https://squawk.dev/api/orgs/graphql`,
+      uri: "https://www.squawktherapy.com/api/orgs/graphql",
     }),
     cache: new InMemoryCache(),
   });
 }
+
+// for local dev with skaffold
+// function createApolloClient() {
+//   return new ApolloClient({
+//     ssrMode: typeof window === "undefined",
+//     link: new HttpLink({
+//       uri: `https://squawk.dev/api/orgs/graphql`,
+//     }),
+//     cache: new InMemoryCache(),
+//   });
+// }
 
 export function initializeApollo(initialState = null) {
   const _apolloClient = apolloClient ?? createApolloClient();

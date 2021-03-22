@@ -5,22 +5,22 @@ import { ApolloClient, InMemoryCache } from "@apollo/client";
   we are running outside of our cluster locally, or on DO, we will
   use the second url/host
 */
-// const client = new ApolloClient({
-//   uri: "http://squawktherapy.com/api/orgs/graphql",
-//   headers: {
-//     Host: "www.squawktherapy.com",
-//   },
-//   cache: new InMemoryCache(),
-// });
-
-// for local dev with skaffold (so jank right now, need to figure out a better way)
 const client = new ApolloClient({
-  uri:
-    "http://ingress-nginx-controller.ingress-nginx.svc.cluster.local/api/orgs/graphql",
+  uri: "http://squawktherapy.com/api/orgs/graphql",
   headers: {
-    Host: process.env.HOST ? "squawk.dev" : "www.squawktherapy.com",
+    Host: "www.squawktherapy.com",
   },
   cache: new InMemoryCache(),
 });
+
+// for local dev with skaffold (so jank right now, need to figure out a better way)
+// const client = new ApolloClient({
+//   uri:
+//     "http://ingress-nginx-controller.ingress-nginx.svc.cluster.local/api/orgs/graphql",
+//   headers: {
+//     Host: process.env.HOST ? "squawk.dev" : "www.squawktherapy.com",
+//   },
+//   cache: new InMemoryCache(),
+// });
 
 export default client;

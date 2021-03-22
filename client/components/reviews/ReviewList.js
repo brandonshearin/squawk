@@ -1,11 +1,28 @@
-import { Row, Col, List, Button, Input, Space, Rate } from "antd";
+import { Row, Col, List, Button, Input, Space, Rate, Skeleton } from "antd";
 
 import Review from "./Review";
 const { TextArea } = Input;
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
-import { gql, useMutation } from "@apollo/client";
-import { UserContext } from "../../hooks/UserContext";
+import { gql, useMutation, useQuery } from "@apollo/client";
+import { useSession } from "next-auth/client";
+
+const GET_REVIEWS = gql`
+  query GetReviews($id: String!) {
+    get(id: $id) {
+      reviews {
+        id
+        userId
+        organizationId
+        userEmail
+        rating
+        content
+        createdAt
+      }
+    }
+  }
+`;
+
 const ADD_REVIEW = gql`
   mutation AddReview($data: AddReviewInput!) {
     addReview(data: $data) {
@@ -26,13 +43,11 @@ const DELETE_REVIEW = gql`
   }
 `;
 
-const ReviewListHeader = ({ organizationId, addReview }) => {
+const ReviewListHeader = ({ organizationId, addReview, session }) => {
   const desc = ["terrible", "bad", "normal", "good", "wonderful"];
   const [showTextArea, setShowTextArea] = useState(false);
   const [text, setText] = useState("");
   const [rate, setRate] = useState(3);
-
-  const { currentUser } = useContext(UserContext);
 
   const submitReview = () => {
     addReview({
@@ -55,7 +70,7 @@ const ReviewListHeader = ({ organizationId, addReview }) => {
             type={"primary"}
             onClick={() => setShowTextArea(!showTextArea)}
             hidden={showTextArea}
-            // disabled={!currentUser}
+            disabled={!session?.user}
           >
             Add Review
           </Button>
@@ -95,10 +110,17 @@ const ReviewListHeader = ({ organizationId, addReview }) => {
   );
 };
 
-export default function ReviewList({ reviews, orgId }) {
-  const [list, setList] = useState(reviews.reviews || []);
+export default function ReviewList({ orgId }) {
+  const { data, loading, error } = useQuery(GET_REVIEWS, {
+    variables: { id: orgId },
+  });
+  const [list, setList] = useState([]);
+  useEffect(() => {
+    setList(data?.get?.reviews);
+  }, [loading]);
 
-  const [addReview, { data, loading, error }] = useMutation(ADD_REVIEW, {
+  const [session, sessionLoading] = useSession();
+  const [addReview, { error: mutateError }] = useMutation(ADD_REVIEW, {
     update: (_, { data }) => {
       const { addReview: newReview } = data;
       setList([newReview, ...list]);
@@ -113,12 +135,25 @@ export default function ReviewList({ reviews, orgId }) {
 
   return (
     <List
-      header={<ReviewListHeader organizationId={orgId} addReview={addReview} />}
+      header={
+        <ReviewListHeader
+          organizationId={orgId}
+          addReview={addReview}
+          session={session}
+        />
+      }
       itemLayout="horizontal"
       dataSource={list}
       renderItem={(item) => (
-        <Review review={item} key={item.id} onDelete={deleteReview} />
+        <Review
+          review={item}
+          key={item.id}
+          onDelete={deleteReview}
+          session={session}
+        />
       )}
-    ></List>
+    >
+      <Skeleton loading={loading} />
+    </List>
   );
 }

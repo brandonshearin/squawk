@@ -13,27 +13,8 @@ const defaultProps = {
   type: "",
 };
 
-const GET_REVIEWS = gql`
-  query GetReviews($id: String!) {
-    get(id: $id) {
-      reviews {
-        id
-        userId
-        organizationId
-        userEmail
-        rating
-        content
-        createdAt
-      }
-    }
-  }
-`;
-export default function Organization({ data = defaultProps }) {
-  const { data: reviews, loading, error } = useQuery(GET_REVIEWS, {
-    variables: { id: data.id },
-  });
 
-  if (error) return `Error! ${error.message}`;
+export default function Organization({ data = defaultProps }) {
 
   return (
     <>
@@ -62,11 +43,11 @@ export default function Organization({ data = defaultProps }) {
 
       <Row>
         <Col span={12} offset={6}>
-          {loading ? (
+          {/* {loading ? (
             "Loading ..."
-          ) : (
-            <ReviewList reviews={reviews.get} orgId={data.id} />
-          )}
+          ) : ( */}
+            <ReviewList orgId={data.id} />
+          {/* )} */}
         </Col>
       </Row>
     </>
