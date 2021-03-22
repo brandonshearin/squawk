@@ -54,7 +54,7 @@ spec:
               value: "587"
             - name: EMAIL_FROM
               value: bshearin15@gmail.com
-            - name: NEXT_AUTH_URL
+            - name: NEXTAUTH_URL
               value: https://www.squawktherapy.com
             - name: DATABASE_URL
               valueFrom:
