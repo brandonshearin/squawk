@@ -16,12 +16,57 @@ spec:
         - name: client
           image: brandonshearin/client-prod
           env:
-            # - name: BASE_URL
-            #   value: "http://squawktherapy.com"
-            # - name: HOST
-            #   value: "www.squawktherapy.com"
-            - name: CLIENT_SIDE_URL
-              value: "https://www.squawktherapy.com"
+            - name: GOOGLE_ID
+              valueFrom:
+                secretKeyRef:
+                  name: google-id
+                  key: GOOGLE_ID
+            - name: GOOGLE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: google-secret
+                  key: GOOGLE_SECRET
+            - name: TWITTER_ID
+              valueFrom:
+                secretKeyRef:
+                  name: twitter-id
+                  key: TWITTER_ID
+            - name: TWITTER_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: twitter-secret
+                  key: TWITTER_SECRET
+            - name: TWITTER_BEARER_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: twitter-bearer-token
+                  key: TWITTER_BEARER_TOKEN
+            - name: EMAIL_SERVER_USER
+              value: apikey
+            - name: EMAIL_SERVER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: email-server-password
+                  key: EMAIL_SERVER_PASSWORD
+            - name: EMAIL_SERVER_HOST
+              value: smtp.sendgrid.net
+            - name: EMAIL_SERVER_PORT
+              value: "587"
+            - name: EMAIL_FROM
+              value: bshearin15@gmail.com
+            - name: NEXT_AUTH_URL
+              value: https://www.squawktherapy.com
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: database-url
+                  key: DATABASE_URL
+            - name: NEXT_AUTH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: next-auth-secret
+                  key: NEXT_AUTH_SECRET
+
 
 ---
 apiVersion: v1

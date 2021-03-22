@@ -51,7 +51,7 @@ const options = {
       return token;
     },
   },
-  secret: process.env.SECRET,
+  secret: process.env.NEXT_AUTH_SECRET,
   session: {
     jwt: true,
   },
