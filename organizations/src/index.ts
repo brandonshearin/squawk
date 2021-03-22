@@ -75,9 +75,17 @@ const start = async () => {
   const server = new ApolloServer({
     schema,
     context: async ({ req }) => {
-      const payload = jwt.decode(
-        req.cookies["next-auth.session-token"]
-      ) as Context;
+      let payload;
+      if (req.cookies["__Secure-next-auth.session-token"]) {
+        console.log("secure");
+        payload = jwt.decode(
+          req.cookies["__Secure-next-auth.session-token"]
+        ) as Context;
+      } else {
+        console.log("dev");
+        payload = jwt.decode(req.cookies["next-auth.session-token"]) as Context;
+      }
+
       console.log(payload);
 
       return { user: payload };
