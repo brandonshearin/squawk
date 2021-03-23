@@ -16,11 +16,11 @@ spec:
         - name: client
           image: brandonshearin/client
           env:
-            - name: BASE_URL
+            - name: NEXT_PUBLIC_BASE_URL
               value: "http://ingress-nginx-controller.ingress-nginx.svc.cluster.local"
-            - name: HOST
+            - name: NEXT_PUBLIC_HOST
               value: "squawk.dev"
-            - name: CLIENT_SIDE_URL
+            - name: NEXT_PUBLIC_CLIENT_SIDE_URL
               value: "https://squawk.dev"
             - name: NODE_ENV
               value: "development"

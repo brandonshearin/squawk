@@ -33,6 +33,14 @@ build:
         manual:
           - src: 'src/**/*.ts'
             dest: .
+    - image: brandonshearin/gateway
+      context: gateway
+      docker:
+        dockerfile: Dockerfile
+      sync: 
+        manual:
+          - src: '/**/*.js'
+            dest: .
     - image: brandonshearin/client
       context: client
       docker:

@@ -6,21 +6,15 @@ import { ApolloClient, InMemoryCache } from "@apollo/client";
   use the second url/host
 */
 const client = new ApolloClient({
-  uri: "http://squawktherapy.com/api/orgs/graphql",
+  uri: process.env.NEXT_PUBLIC_BASE_URL
+    ? `${process.env.NEXT_PUBLIC_BASE_URL}/api/orgs/graphql`
+    : "http://squawktherapy.com/api/orgs/graphql",
   headers: {
-    Host: "www.squawktherapy.com",
+    Host: process.env.NEXT_PUBLIC_HOST
+      ? process.env.NEXT_PUBLIC_HOST
+      : "www.squawktherapy.com",
   },
   cache: new InMemoryCache(),
 });
-
-// for local dev with skaffold (so jank right now, need to figure out a better way)
-// const client = new ApolloClient({
-//   uri:
-//     "http://ingress-nginx-controller.ingress-nginx.svc.cluster.local/api/orgs/graphql",
-//   headers: {
-//     Host: process.env.HOST ? "squawk.dev" : "www.squawktherapy.com",
-//   },
-//   cache: new InMemoryCache(),
-// });
 
 export default client;

@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway
+  template: # the template says how to create each individual pod that the deployment will manage
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      containers:
+        - name: gateway
+          image: brandonshearin/gateway
+---
+apiVersion: v1
+kind: Service # default behavior, when no type is provided, is to create a ClusterIP service
+metadata:
+  name: gateway-srv
+spec:
+  selector:
+    app: gateway
+  ports:
+    - name: gateway
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
