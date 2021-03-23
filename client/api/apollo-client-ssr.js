@@ -7,8 +7,8 @@ import { ApolloClient, InMemoryCache } from "@apollo/client";
 */
 const client = new ApolloClient({
   uri: process.env.NEXT_PUBLIC_BASE_URL
-    ? `${process.env.NEXT_PUBLIC_BASE_URL}/api/orgs/graphql`
-    : "http://squawktherapy.com/api/orgs/graphql",
+    ? `${process.env.NEXT_PUBLIC_BASE_URL}/api/gateway/graphql`
+    : "http://squawktherapy.com/api/gateway/graphql",
   headers: {
     Host: process.env.NEXT_PUBLIC_HOST
       ? process.env.NEXT_PUBLIC_HOST

@@ -20,6 +20,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@apollo/federation": "^0.22.0",
     "@bscommon/common": "1.0.22",
     "@typegoose/typegoose": "^7.6.0",
     "@types/cookie-session": "^2.0.42",
@@ -35,6 +36,7 @@
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",
     "graphql": "^15.5.0",
+    "graphql-tag": "^2.11.0",
     "mongoose": "5.10.18",
     "mongoose-autopopulate": "^0.12.3",
     "reflect-metadata": "^0.1.13",

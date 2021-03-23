@@ -2,11 +2,13 @@ import mongoose from "mongoose";
 import { app } from "./app";
 import { natsWrapper } from "./nats-wrapper";
 
-import { buildSchema } from "type-graphql";
+import { buildSchema, createResolversMap } from "type-graphql";
 import { OrgResolver } from "./resolvers/organization-resolver";
 import { ReviewResolver } from "./resolvers/review-resolver";
 import { ApolloServer } from "apollo-server-express";
 import jwt from "jsonwebtoken";
+import { buildFederatedSchema, printSchema } from "@apollo/federation";
+import gql from "graphql-tag";
 require("dotenv").config();
 export interface Context {
   user: {
@@ -72,20 +74,18 @@ const start = async () => {
     validate: false,
   });
 
+  const federatedSchema = buildFederatedSchema({
+    typeDefs: gql(printSchema(schema)),
+    resolvers: createResolversMap(schema) as any,
+  });
+
   const server = new ApolloServer({
-    schema,
+    schema: federatedSchema,
     context: async ({ req }) => {
       let payload;
-      if (req.cookies["__Secure-next-auth.session-token"]) {
-        console.log("secure");
-        payload = jwt.decode(
-          req.cookies["__Secure-next-auth.session-token"]
-        ) as Context;
-      } else {
-        console.log("dev");
-        payload = jwt.decode(req.cookies["next-auth.session-token"]) as Context;
+      if (req.headers["user-cookie"]) {
+        payload = jwt.decode(req.headers["user-cookie"] as string) as Context;
       }
-
       console.log(payload);
 
       return { user: payload };
