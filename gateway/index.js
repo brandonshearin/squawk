@@ -8,6 +8,7 @@ class AuthenticatedDataSource extends RemoteGraphQLDataSource {
   willSendRequest({ request, context }) {
     request.http.headers.set("user-cookie", context.userCookie);
   }
+  
 }
 
 const start = async () => {
