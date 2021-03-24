@@ -1,4 +1,4 @@
-import { Typography } from "antd";
+import { Typography, Button } from "antd";
 import React from "react";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/client";
@@ -9,25 +9,12 @@ const LandingPage = () => {
   const [session, loading] = useSession();
 
   return (
-    <main>
-      {!session && (
-        <>
-          Not signed in <br />
-          <button onClick={signIn}>Sign in</button>
-        </>
-      )}
-      {session && (
-        <>
-          Signed in as {session.user.email}
-          <br />
-          <div>You can now access our app's secret pages</div>
-          <button>
-            <Link href="/secret">To the secret page</Link>
-          </button>
-          <button onClick={signOut}>Sign out</button>
-        </>
-      )}
-    </main>
+    <>
+      <h1>Welcome to squawk therapy</h1>
+      <Button>
+        <Link href="/organizations">Go to organizations overview</Link>
+      </Button>
+    </>
   );
 };
 

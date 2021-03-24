@@ -12,10 +12,8 @@ const AppComponent = ({ Component, pageProps, currentUser }) => {
   return (
     <ApolloProvider client={apolloClient}>
       <Provider session={pageProps.session}>
-        <UserContext.Provider value={{ currentUser }}>
-        <Header currentUser={currentUser} />
+        <Header />
         <Component {...pageProps} />
-        </UserContext.Provider>
       </Provider>
     </ApolloProvider>
   );
@@ -23,7 +21,7 @@ const AppComponent = ({ Component, pageProps, currentUser }) => {
 
 AppComponent.getInitialProps = async (appContext) => {
   const client = buildClient(appContext.ctx);
-  const data = {}
+  const data = {};
   // const { data } = await client.get("/api/users/currentuser");
 
   // we need the following lines so that the getInitialProps function

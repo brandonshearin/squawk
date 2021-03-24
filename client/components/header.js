@@ -1,32 +1,28 @@
 import Link from "next/link";
-import { Menu } from "antd";
+import { Menu, Button } from "antd";
 import { UserOutlined, LoginOutlined, LogoutOutlined } from "@ant-design/icons";
+import { signIn, signOut, useSession } from "next-auth/client";
 
-const Header = ({ currentUser }) => {
+const Header = () => {
+  const [session, loading] = useSession();
+  console.log(session);
   const links = [
-    !currentUser && {
+    !session?.user && {
       label: "Sign In",
-      href: "/auth/signin",
       icon: <LoginOutlined />,
+      onClick: signIn,
     },
-    !currentUser && {
-      label: "Sign Up",
-      href: "/auth/signup",
-      icon: <UserOutlined />,
-    },
-    currentUser && {
+    session?.user && {
       label: "Sign Out",
-      href: "/auth/signout",
       icon: <LogoutOutlined />,
+      onClick: signOut,
     },
   ]
     .filter((linkConfig) => linkConfig) // filters out any entries that are falsey
-    .map(({ label, href, icon }) => {
+    .map(({ label, icon, onClick }) => {
       return (
         <Menu.Item key={label} icon={icon} style={{ float: "right" }}>
-          <Link href={href}>
-            <a>{label}</a>
-          </Link>
+          <a onClick={onClick}>{label}</a>
         </Menu.Item>
       );
     });
