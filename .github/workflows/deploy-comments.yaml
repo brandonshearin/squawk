@@ -1,25 +1,25 @@
-name: deploy-comments
+name: deploy-user-profile
 
 on: 
   push:
     branches: 
       - master
     paths:
-      - 'comments/**'
+      - 'user-profile/**'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: cd comments && docker build -t brandonshearin/comments .
+      - run: cd user-profile && docker build -t brandonshearin/user-profile .
       - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      - run: docker push brandonshearin/comments
+      - run: docker push brandonshearin/user-profile
       - uses: digitalocean/action-doctl@v2
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} 
       - run: doctl kubernetes cluster kubeconfig save squawk
-      - run: kubectl rollout restart deployment comments-depl
+      - run: kubectl rollout restart deployment user-profile-depl
