@@ -27,6 +27,10 @@ const start = async () => {
         name: "organizations",
         url: "http://organizations-srv:3000/api/orgs/graphql",
       },
+      {
+        name: "user-profile",
+        url: "http://user-profile-srv:3000/api/user-profile/graphql"
+      }
       // { name: "products", url: "http://localhost:4002" },
       // { name: "reviews", url: "http://localhost:4003" },
     ],

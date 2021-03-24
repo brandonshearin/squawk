@@ -2,6 +2,21 @@ import mongoose from "mongoose";
 import { app } from "./app";
 import { natsWrapper } from "./nats-wrapper";
 
+import { buildSchema, createResolversMap } from "type-graphql";
+import { UserProfileResolver } from "./resolvers/user-profile-resolver";
+import { ApolloServer } from "apollo-server-express";
+import jwt from "jsonwebtoken";
+import { buildFederatedSchema, printSchema } from "@apollo/federation";
+import gql from "graphql-tag";
+export interface Context {
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    iat: number;
+  };
+}
+
 const start = async () => {
   if (!process.env.JWT_KEY) {
     throw new Error("JWT_KEY must be defined");
@@ -51,9 +66,36 @@ const start = async () => {
     console.log(err);
   }
 
-  app.listen(3000, () => {
-    console.log("Listening on port 3000!!!!");
+  const schema = await buildSchema({
+    resolvers: [UserProfileResolver],
+    emitSchemaFile: true,
+    validate: false,
+  });
+
+  const federatedSchema = buildFederatedSchema({
+    typeDefs: gql(printSchema(schema)),
+    resolvers: createResolversMap(schema) as any,
+  });
+
+  const server = new ApolloServer({
+    schema: federatedSchema,
+    context: async ({ req }) => {
+      let payload;
+      if (req.headers["user-cookie"]) {
+        payload = jwt.decode(req.headers["user-cookie"] as string) as Context;
+      }
+      console.log(payload);
+
+      return { user: payload };
+    },
+  });
+  server.applyMiddleware({ app, path: "/api/user-profile/graphql" });
+
+  await app.listen(3000, () => {
+    console.log("Listening on port 3000!!!");
   });
 };
 
-start();
+start().catch((err) => {
+  console.log("service failure: ", err);
+});

@@ -2,16 +2,18 @@ import express from "express";
 import "express-async-errors";
 import { json } from "body-parser";
 import cookieSession from "cookie-session";
-
-import { currentUser, errorHandler, NotFoundError } from "@bscommon/common";
-
-import { newRouter } from "./routes/new";
-import { showRouter } from "./routes/show";
-import { indexRouter } from "./routes";
-import { deleteRouter } from "./routes/delete";
-import { updateRouter } from "./routes/update";
+var cors = require("cors");
+var cookieParser = require("cookie-parser");
+import { currentUser, errorHandler } from "@bscommon/common";
 
 const app = express();
+app.use(cookieParser());
+app.use(
+  cors({
+    origin: "*",
+    credentials: true,
+  })
+);
 app.set("trust proxy", true);
 app.use(json());
 app.use(
@@ -20,18 +22,6 @@ app.use(
     secure: process.env.NODE_ENV !== "test",
   })
 );
-
-app.use(currentUser);
-
-app.use(newRouter);
-app.use(showRouter);
-app.use(indexRouter);
-app.use(deleteRouter);
-app.use(updateRouter);
-
-app.get("*", async () => {
-  throw new NotFoundError();
-});
 
 app.use(errorHandler);
 

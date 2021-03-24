@@ -22,9 +22,9 @@ spec:
             backend:
               serviceName: organizations-srv
               servicePort: 3000
-          - path: /api/comments/?(.*)
+          - path: /api/user-profile/?(.*)
             backend:
-              serviceName: comments-srv
+              serviceName: user-profile-srv
               servicePort: 3000
           - path: /?(.*)
             backend:
